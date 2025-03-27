@@ -4,14 +4,8 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
-app.get('/',(req,res) => {
-    res.json({message: "hello from server"})
-})
-
-const authRouter = require('./routers/authRouter');
-const tasksRouter = require('./routers/tasksRouter');
-
 const app = express();
+
 
 app.use(cors());
 app.use(helmet());
@@ -25,9 +19,18 @@ mongoose.connect(process.env.MONGO_URL, {useNewUrlParse: true, useUnifiedTopolog
     console.log(err)
 })
 
+const authRouter = require('./routers/authRouter');
+const tasksRouter = require('./routers/tasksRouter');
+
 app.use('/api/auth', authRouter)
 app.use('/api',tasksRouter)
 
-app.listen(process.env.PORT, () => {
-    console.log("listening...")
+app.get('/',(req,res) => {
+    res.json({message: "hello from server"})
 })
+
+// app.listen(process.env.PORT, () => {
+//     console.log("listening...")
+// })
+
+module.exports = app;
