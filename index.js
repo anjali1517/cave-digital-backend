@@ -11,22 +11,30 @@ app.use(cors());
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({ extended: true }));
 
-mongoose.connect(process.env.MONGO_URL, {useNewUrlParse: true, useUnifiedTopology: true,} ).then(() => {
-    console.log("Database connection fullfilled")
-}).catch((err) => {
-    console.log(err)
-})
+const connectDB = async () => {
+    try {
+        await mongoose.connect(process.env.MONGO_URL, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+        console.log("Database connected");
+    } catch (err) {
+        console.error("MongoDB connection error:", err);
+    }
+};
+
+connectDB();
 
 const authRouter = require('./routers/authRouter');
 const tasksRouter = require('./routers/tasksRouter');
 
 app.use('/api/auth', authRouter)
-app.use('/api',tasksRouter)
+app.use('/api', tasksRouter)
 
-app.get('/',(req,res) => {
-    res.json({message: "hello from server"})
+app.get('/', (req, res) => {
+    res.json({ message: "hello from server" })
 })
 
 // app.listen(process.env.PORT, () => {
