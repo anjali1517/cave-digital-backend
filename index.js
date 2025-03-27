@@ -4,6 +4,10 @@ const helmet = require('helmet');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
+app.get('/',(req,res) => {
+    res.json({message: "hello from server"})
+})
+
 const authRouter = require('./routers/authRouter');
 const tasksRouter = require('./routers/tasksRouter');
 
@@ -15,7 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
-mongoose.connect(process.env.MONGO_URL).then(() => {
+mongoose.connect(process.env.MONGO_URL, {useNewUrlParse: true, useUnifiedTopology: true,} ).then(() => {
     console.log("Database connection fullfilled")
 }).catch((err) => {
     console.log(err)
@@ -23,10 +27,6 @@ mongoose.connect(process.env.MONGO_URL).then(() => {
 
 app.use('/api/auth', authRouter)
 app.use('/api',tasksRouter)
-
-app.get('/',(req,res) => {
-    res.json({message: "hello from server"})
-})
 
 app.listen(process.env.PORT, () => {
     console.log("listening...")

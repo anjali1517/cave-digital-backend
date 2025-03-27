@@ -10,7 +10,7 @@ exports.signup = async (req, res) => {
         const { error, value } = signupSchema.validate({ email, password, name })
 
         if (error) {
-            return res.status(401).json({ success: false, message: error.details[0].message })
+            return res.status(403).json({ success: false, message: error.details[0].message })
         }
 
         const existingUser = await User.findOne({ email })
@@ -62,18 +62,18 @@ exports.login = async (req, res) => {
         const { error, value } = loginSchema.validate({ email, password })
 
         if (error) {
-            return res.status(401).json({ success: false, message: error.details[0].message })
+            return res.status(403).json({ success: false, message: error.details[0].message })
         }
 
         const existingUser = await User.findOne({ email }).select('+password')
         console.log("user", existingUser)
         if (!existingUser) {
-            return res.status(401).json({ success: false, message: "User does not exists" })
+            return res.status(403).json({ success: false, message: "User does not exists" })
         }
 
         const result = await doHashValidation(password, existingUser.password)
         if (!result) {
-            return res.status(401).json({ success: false, message: "Invalid credentials" })
+            return res.status(403).json({ success: false, message: "Invalid credentials" })
         }
 
         const token = jwt.sign({
@@ -153,7 +153,7 @@ exports.verifyForgotPasswordCode = async (req, res) => {
         const { error, value } = acceptedFPSchema.validate({ email, providedCode, newPassword })
 
         if (error) {
-            return res.status(401).json({ success: false, message: error.details[0].message })
+            return res.status(403).json({ success: false, message: error.details[0].message })
         }
         const codeValue = providedCode.toString();
         const existingUser = await User.findOne({email}).select('+forgetPasswordCode +forgetPasswordValidation')

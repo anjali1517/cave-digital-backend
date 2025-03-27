@@ -57,7 +57,7 @@ exports.createNewTask = async (req,res) => {
     try {
         const {error,value} = createTaskSchema.validate({title, description,userId});
         if(error){
-            return res.status(401).json({success:false, message:error.details[0].message})
+            return res.status(403).json({success:false, message:error.details[0].message})
         }
 
         const result = await Tasks.create({
@@ -76,7 +76,7 @@ exports.updateTask = async (req,res) => {
     try {
         const {error,value} = createTaskSchema.validate({title, description,userId});
         if(error){
-            return res.status(401).json({success:false, message:error.details[0].message})
+            return res.status(403).json({success:false, message:error.details[0].message})
         }
         const existingTask = await Tasks.findOne({_id});
         if(!existingTask){
